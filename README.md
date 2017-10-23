@@ -11,15 +11,17 @@ If the database will prove to be too complicated, manually adding songs will suf
 
 As for the requirements part I thought of the following:
 
-*Input form - as I have stated [Artist] [SongTitle] (required) and [Album] [Genre] [Year] (optional)  
-*List of items - the list of favorite songs  
+*Input form - as I have stated [Artist] [SongTitle] (required) and [Album] [Genre] [Year] [Heard lyrics] (optional)  
+*List of items - the list of favorite songs (songs that you added 
 *Chart - how many songs belonging to each specific genre you have and   
 	 how many songs you discovered per week  
 *Authentication - every user should be able to authenticate in the app or by google/facebook  
 *Offline support - only the favorite songs should be stored locally, so the search option   
 		   (if there will exist) should be available only online  
-*Online support - be able to listen to a certain song through a youtube link linked to this app  
-*Intent - sent e-mail/message with some selected favorite songs to share with friends  
+*Online support - be able to listen to a certain song through a youtube link linked to this app (option: link can be added by admin)
+		- use API(if can be found) or a website to find the song through the lyrics you have stored
+*Intent - sent e-mail/message with some selected favorite songs to share with friends 
+	- (optional) set a certain song to *watch later*
 *Animations - pop-ups with achievements (e.g. you added your 5th song, Hooray! or you added your 100th song,  
 	Get a life! and so on)  
 	+ alarms to remind you to check in the app  
