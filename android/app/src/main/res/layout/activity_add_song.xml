@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.andrei.songsapp.SongDetailsActivity">
+    tools:context="com.example.andrei.songsapp.AddSongActivity">
 
     <EditText
         android:id="@+id/inputArtist"
@@ -58,6 +58,7 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:text="@android:string/unknownName"
+        android:focusable="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inputAlbum" />
@@ -91,24 +92,14 @@
         app:layout_constraintTop_toBottomOf="@+id/inputGenre" />
 
     <Button
-        android:id="@+id/saveSongButton1"
+        android:id="@+id/addSongButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:onClick="saveSong"
-        android:text="@string/save_button"
+        android:onClick="addSong"
+        android:text="@string/add_song_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <Button
-        android:id="@+id/deleteSongButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        android:onClick="deleteSong"
-        android:text="@string/delete_button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 </android.support.constraint.ConstraintLayout>

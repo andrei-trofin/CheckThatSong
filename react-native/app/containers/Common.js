@@ -1,8 +1,24 @@
-import {Linking} from 'react-native'
+import {Linking, AsyncStorage} from 'react-native'
 
 const defaultMail = 'andrei.trofin7@gmail.com'
 
-export const sendMail = (songs) => {
+async function getCache() {
+    try {
+        console.log("Sending a mail, aren;t we\n")
+        const value = await AsyncStorage.getItem("BA");
+        console.log("Ceva doar")
+        //console.log("VAlue: " + value)
+    } catch (error) {
+
+    }
+}
+
+export const  sendMail = (songs) => {
+
+    getCache().then(() => {
+        console.log("GET CAHCE FINISHED")
+    })
+
     let url = "mailto:"
     url += defaultMail
     url += '?subject='

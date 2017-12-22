@@ -3,8 +3,15 @@ package com.example.andrei.songsapp;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+
+import com.example.andrei.songsapp.Entities.SongsDB;
+
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SongDetailsActivity extends AppCompatActivity {
     private EditText inputArtist;
@@ -86,13 +93,65 @@ public class SongDetailsActivity extends AppCompatActivity {
             lyrics = "";
         }
 
-        AdminActivity.songs.get(position).setArtist(artist);
-        AdminActivity.songs.get(position).setTitle(title);
-        AdminActivity.songs.get(position).setAlbum(album);
-        AdminActivity.songs.get(position).setYear(Integer.parseInt(year));
-        AdminActivity.songs.get(position).setGenre(genre);
-        AdminActivity.songs.get(position).setLyrics(lyrics);
+        SongsDB originalSong = AdminActivity.songsDB.get(position);
+        final SongsDB song = new SongsDB(originalSong.id, artist, title, album,
+                                    Integer.parseInt(year), genre, lyrics, originalSong.userId);
 
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                AdminActivity.db.songDao().updateSong(song);
+            }
+        });
+
+
+        ExecutorService executor2 = Executors.newSingleThreadExecutor();
+        executor2.execute(new Runnable() {
+            @Override
+            public void run() {
+                List<SongsDB> songsss = AdminActivity.db.songDao().getAllSongs();
+                for (SongsDB song1: songsss) {
+                    Log.d("SONG", song1.toString());
+                }
+            }
+        });
+
+        AdminActivity.songsDB.get(position).setArtist(artist);
+        AdminActivity.songsDB.get(position).setTitle(title);
+        AdminActivity.songsDB.get(position).setAlbum(album);
+        AdminActivity.songsDB.get(position).setYear(Integer.parseInt(year));
+        AdminActivity.songsDB.get(position).setGenre(genre);
+        AdminActivity.songsDB.get(position).setLyrics(lyrics);
+
+        AdminActivity.adapter.notifyDataSetChanged();
+        finish();
+    }
+
+    public void deleteSong(View view) {
+        final SongsDB song = AdminActivity.songsDB.get(position);
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                AdminActivity.db.songDao().deleteSong(song);
+            }
+        });
+
+        ExecutorService executor2 = Executors.newSingleThreadExecutor();
+        executor2.execute(new Runnable() {
+            @Override
+            public void run() {
+                List<SongsDB> songs = AdminActivity.db.songDao().getAllSongs();
+                for (SongsDB songDB: songs) {
+                    Log.d("SONG", songDB.toString());
+                }
+            }
+        });
+
+
+        AdminActivity.songsDB.remove(position);
         AdminActivity.adapter.notifyDataSetChanged();
         finish();
     }

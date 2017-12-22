@@ -3,6 +3,7 @@ package com.example.andrei.songsapp;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -20,6 +21,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,6 +32,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.andrei.songsapp.Database.AppDatabase;
+import com.example.andrei.songsapp.Entities.SongsDB;
+import com.example.andrei.songsapp.Entities.User;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,6 +43,8 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -72,6 +80,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    public AppDatabase db;
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +90,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
+
+        Log.d("DB","Before creating the database");
+
+        db = AppDatabase.getAppDatabase(this);
+
+        Log.d("DB", "Database created!");
+
         populateUserAndAdmin();
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -169,6 +186,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      */
     private void attemptLogin() {
         if (mAuthTask != null) {
+            System.out.println("USer already logged");
             return;
         }
 
@@ -220,6 +238,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
             if (taskResult.equals("user") || taskResult.equals("userRegistered")) {
+//                if (taskResult.equals("user")) {
+//                    System.out.println("We have a user in our database, hooray");
+//                    List<User> users = db.userDao().getAllUsers();
+//                    for (User u: users) {
+//                        System.out.println(u);
+//                    }
+//                }
+//
+//                if (taskResult.equals("userRegistered")) {
+//                    System.out.println("We have registered an user in our database, hooray");
+//                }
+
                 Intent intent = new Intent(this, UserActivity.class);
                 intent.putExtra("mail", email);
                 startActivity(intent);
@@ -358,10 +388,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 return "error";
             }
 
+            List<User> users = db.userDao().getAllUsers();
+            for (User user: users) {
+                Log.d("USER", user.toString());
+            }
+//            List<User> userList = db.userDao().getCurrentUser(mEmail);
+//            if (!userList.isEmpty()) {
+//                if (userList.get(0).getPassword().equals(mPassword)) {
+//                    return "user";
+//                } else {
+//                    return "passwordError";
+//                }
+//            }
+
+
             for (String userEmail : Collections.list(userList.keys())) {
                 if (userEmail.equals(mEmail)) {
                     // Account exists, return true if the password matches.
                     if (userList.get(userEmail).equals(mPassword)) {
+                        db.userDao().insertUser(new User(mEmail, mPassword));
                         return "user";
                     } else {
                         return "passwordError";
@@ -373,6 +418,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 if (adminEmail.equals(mEmail)) {
                     // Account exists, return true if the password matches.
                     if (adminList.get(adminEmail).equals(mPassword)) {
+                        db.userDao().insertUser(new User(mEmail, mPassword));
                         return "admin";
                     } else {
                         return "passwordError";
@@ -381,6 +427,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
 
             userList.put(mEmail, mPassword);
+            db.userDao().insertUser(new User(mEmail, mPassword));
             return "userRegistered";
         }
 

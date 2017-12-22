@@ -1,8 +1,14 @@
-
-import {EDIT_SONG} from "../actions/types";
+import {AsyncStorage} from 'react-native'
+import {EDIT_SONG, ADD_SONG, DELETE_SONG} from "../actions/types";
 
 const initialState = {
-    userName: '',
+    users: [
+        {
+            id: 1,
+            username: 'a@a.com',
+            password: 'aaaaa'
+        },
+    ],
     songs: [
         {
             id: 1,
@@ -43,14 +49,43 @@ const initialState = {
     ],
 }
 
+
+async function getSongsFromUser(user) {
+    let songsFromUserString = await AsyncStorage.getItem(user)
+    console.log("RESULTS FROM REDUCER GET", songsFromUserString)
+    try {
+        let songsFromUser = JSON.parse(songsFromUserString)
+        if (songsFromUser === null) {
+            songsFromUser = []
+        }
+        return songsFromUser
+    } catch (error) {
+        console.log("ERROR", error)
+    }
+}
+
 function songs(state = [], action) {
     console.log("SONGS: ", state);
-    switch(action.type){
+    switch(action.type) {
         case EDIT_SONG:
             return updateSongs(state, action);
             break;
+        case ADD_SONG:
+            return addSongs(state, action);
+            break
+        case DELETE_SONG:
+            return deleteSongs(state, action);
+            break
         default:
             return state;
+    }
+}
+
+function users(state = [], action) {
+    console.log("USERS: ", state)
+    switch(action.type) {
+        default:
+            return state
     }
 }
 
@@ -70,10 +105,40 @@ function updateSongs(state = [], action) {
     });
 }
 
+async function addSongs(state = [], action) {
+    let newSong = {
+        id: action.id,
+        artist: action.artist,
+        title: action.title,
+        album: action.album,
+        year: action.year,
+        genre: action.genre,
+        lyrics: action.lyrics
+    }
+    let suongs = []
+    await getSongsFromUser("a@a.com").then((result) => {
+        suongs = result
+    })
+    console.log("SONGLIST in ADD", suongs)
+    console.log("New song to be added", newSong)
+    // console.log("STATE", state)
+    //console.log("NEW SONGS", [...state.songs, newSong])
+    return {
+        songs: [...suongs, newSong]
+    }
+}
+
+function deleteSongs(state = [], action) {
+    return
+        state.filter( (item) => item.id !== action.id)
+
+}
+
+
 export const reducer = (state = initialState, action ) => {
     console.log("Reducer")
     return {
-        userName: '',
+        users: users(state.users, action),
         songs: songs(state.songs, action)
     }
 }

@@ -3,7 +3,7 @@
     <string name="edit_message">Enter your message here</string>
     <string name="button_send">Send</string>
     <string name="text_view">Your text here</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_login">Songs App</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -24,4 +24,8 @@
     <string name="admin_mail_button">Send mail</string>
     <string name="test_button">CLICK ME</string>
     <string name="save_button">Save</string>
+    <string name="delete_button">Delete</string>
+    <string name="add_song_button">Add</string>
+    <string name="go_to_add_button">Add Song</string>
+    <string name="go_to_chart_button">See Chart</string>
 </resources>

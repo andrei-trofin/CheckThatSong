@@ -14,7 +14,7 @@ import {
     View,
     TextInput,
     ScrollView, Button,
-    Alert
+    Alert, AsyncStorage
 } from 'react-native';
 import {Actions} from "react-native-router-flux";
 
@@ -37,16 +37,32 @@ users = [
         user: 'Ala@gmail.com',
         password: 'Alagmail'
     },
+    {
+        user: 'a@a.com',
+        password: 'aaaaa'
+    },
 ]
 
 export default class Login extends Component {
     constructor(props){
         super(props)
+        console.log("LOGIN PROPS", props)
         this.state = {currentUser: '',
                       currentPassword: ''}
     }
 
+    async addUsersToStorage() {
+        await AsyncStorage.setItem("userList", JSON.stringify(users))
+    }
 
+    async isUserLogged() {
+        let user = await AsyncStorage.getItem("loggedUser");
+        return user
+    }
+
+    async logUser(user) {
+        await AsyncStorage.setItem("loggedUser", user)
+    }
 
     registerNewAccount() {
         //TODO create actions and add to state. retain username
@@ -73,7 +89,8 @@ export default class Login extends Component {
        for (let i = 0; i < users.length; i++) {
            if (users[i].user == this.state.currentUser && users[i].password == this.state.currentPassword)  {
                //TODO differentiate between the 2 type of users
-               Actions.adminView()
+               //this.logUser(this.state.currentUser)
+               Actions.adminView({user: this.state.currentUser})
                return;
            }
        }
@@ -89,7 +106,8 @@ export default class Login extends Component {
                   Username
               </Text>
               <TextInput
-                onChangeText = {(text) => this.state.currentUser = text}
+                    onChangeText = {(text) => this.state.currentUser = text}
+                    autoCapitalize = "none"
               />
           </View>
           <View style={{flexDirection: 'column'}}>
@@ -97,8 +115,9 @@ export default class Login extends Component {
                   Password
               </Text>
               <TextInput
-                secureTextEntry = {true}
-                onChangeText = {(text) => this.state.currentPassword = text}
+                    autoCapitalize = "none"
+                    secureTextEntry = {true}
+                    onChangeText = {(text) => this.state.currentPassword = text}
               />
           </View>
           <View style={{margin: 7}}/>

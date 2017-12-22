@@ -28,4 +28,29 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/adminSongList" />
 
+    <Button
+        android:id="@+id/go_to_add_song"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="addSongGo"
+        android:text="@string/go_to_add_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/adminSongList" />
+
+    <Button
+        android:id="@+id/goToChartButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="goToChart"
+        android:text="@string/go_to_chart_button"
+        app:layout_constraintEnd_toStartOf="@+id/adminMailButton"
+        app:layout_constraintHorizontal_bias="0.488"
+        app:layout_constraintStart_toEndOf="@+id/go_to_add_song"
+        app:layout_constraintTop_toBottomOf="@+id/adminSongList" />
+
 </android.support.constraint.ConstraintLayout>
